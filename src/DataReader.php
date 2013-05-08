@@ -92,18 +92,24 @@ class DataReader {
 	/**
  	 * \brief Gets the available languages for the POI object.
  	 * @param array $poi a single POI object (such as a Point Of Interest, Route or Event).
+ 	 * @param string $term which field should the languages be checked. Either label or description.
  	 * @retval array an associative array containing the available languages: code => locale or false
  	 */
-	public static function getAvailableLanguages($poi) {
+	public static function getAvailableLanguages($poi, $term = 'label') {
 		if(!isset($poi))
 			return false;
+		
+		if($term != 'label'
+			&& $term != 'description')
+			return false;
 			
-		$labels = $poi['label']; 
+		$labels = $poi[$term]; 
 		$languages = array();
 
 		foreach($labels as $label) {
-			$lang = Locale::getPrimaryLanguage($label['lang']);
-			$languages[$lang] = $label['lang'];
+			$lang = str_replace('-', '_', $label['lang']);
+			$explode = explode('_', $lang);
+			$languages[$explode[0]] = $label['lang'];
 		}
 		return $languages;
 	}
@@ -127,9 +133,13 @@ class DataReader {
 	public static function getLabel($poi, $term = 'primary', $lang = 'en_GB') {
 		if(!isset($poi))
 			return false;
-			
+		
 		$labels = $poi['label'];
-		$poiLang = $poi['lang'];
+		if(isset($poiLang))
+			$poiLang = $poi['lang'];
+		else
+			$poiLang = 'en_GB';
+			
 		$defaultValue = false;
 
 		foreach($labels as $label) {
@@ -157,7 +167,10 @@ class DataReader {
  	 * @retval string the description in the wanted language or false
  	 */
 	public static function getDescription($poi, $lang = 'en_GB') {
-		if(!isset($poi))
+		if(!isset($poi) )
+			return false;
+		
+		if(!isset($poi['description']))
 			return false;
 			
 		$descriptions = $poi['description'];
@@ -246,10 +259,14 @@ class DataReader {
 		if(!isset($poi))
 			return false;
 			
+		if(!isset($poi['link']))
+			return false;
+			
 		$thumbnails = array();
 		$links = $poi['link'];
 		foreach($links as $link) {
-			if($link['term'] == DataReader::$term['LINK_TERM_ICON']) {
+			if(isset($link['term']) 
+				&& $link['term'] == DataReader::$term['LINK_TERM_ICON']) {
 				if(isset($link['href'])) {
 					$content = new ImageContent($link['href']);
 					array_push($thumbnails, $content);
@@ -271,11 +288,15 @@ class DataReader {
 	public static function getImagesUri($poi) {
 		if(!isset($poi))
 			return false;
+		
+		if(!isset($poi['link']))
+			return false;
 			
 		$images = array();
 		$links = $poi['link'];
 		foreach($links as $link) {
-			if($link['term'] == $term['LINK_TERM_RELATED']
+			if(isset($link['term'])
+				&& $link['term'] == DataReader::$term['LINK_TERM_RELATED']
 				&& strstr($link['type'], 'image/')) {
 				$content = new ImageContent($link['href']);
 				array_push($images, $content);
@@ -412,10 +433,10 @@ class DataReader {
 			$polygons = $location['polygon'];
 			foreach($polygons as $polygon) {
 				if($polygon['term'] == $term) {
-					$data = explode(',', $line['SimplePolygon']['posList']);
+					$data = explode(',', $polygon['SimplePolygon']['posList']);
 					$polygon = new PolygonGeometry();
 					for($i = 0; $i < count($data); $i++) {
-						$posList = explode(' ', $data);
+						$posList = explode(' ', $data[$i]);
 						$polygon->addPoint(new GeometryContent($posList[0], $posList[1]));
 					}
 					
@@ -463,7 +484,8 @@ class DataReader {
 		
 		$links = $poi['link'];
 		foreach($links as $link) {
-			if($link['term'] == $term) {
+			if(isset($link['term'])
+				&& $link['term'] == $term) {
 				return $link['href'];
 			}
 		}
@@ -609,7 +631,7 @@ class PolygonGeometry implements Geometry {
 	 * \brief Default constructor.
 	 */
 	public function __construct() {
-		$this->points = array();
+		$this->polygon = array();
 	}
 	
 	/**
@@ -617,11 +639,11 @@ class PolygonGeometry implements Geometry {
 	 * @param GeometryContent $point the point to be added
 	 */
 	public function addPoint($point) {
-		array_push($polygon, $point);
+		array_push($this->polygon, $point);
 	}
 	
 	public function getSize() {
-		return count($polygon);
+		return count($this->polygon);
 	}
 }
 ?>

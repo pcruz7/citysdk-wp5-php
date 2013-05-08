@@ -49,7 +49,7 @@ class Request {
 		$this->_verb = 'GET';
 		$this->_url = $url;
 		$this->_requestType = 'application/json';	
-		$this->_accepthType = $this->_requestType;
+		$this->_acceptType = $this->_requestType;
 	}
 
 	// sets the options for cURL

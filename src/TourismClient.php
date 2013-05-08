@@ -47,7 +47,7 @@ class TourismClient {
 			$request = new Request($uri);
 			$request->execute();
 			if($request->responseInfo['http_code'] == '200') {
-				$_SESSION[$uri] = json_decode($request->responseBody, true);	
+				$_SESSION[$uri] = json_decode($request->responseBody, true);
 				$this->decodeVersions($_SESSION[$uri]);
 			}
 		}
@@ -144,29 +144,31 @@ class TourismClient {
 	/**
  	 * \brief Gets a list of Categories of either Points of Interest, Events or Routes.
  	 *
- 	 * @param string $term the term to get a given list. Should be either poi, event or route.
+ 	 * @param array $parameters the parameters that should be followed. It should contain a list term with a value either poi, event or route.
  	 * @retval JSON containing the list of Categories.
  	 * @throws VersionNotAvailableException thrown if a given version is not available or was not set.
  	 * @throws ResourceNotAvailableException thrown if the Categories listing is not available.
- 	 * @throws InvalidTermException thrown if the term is not either pois, events or routes.
+ 	 * @throws InvalidParameterException thrown if a given parameter is invalid for Categories listing.
+ 	 * @throws InvalidTermException thrown if the list term is not either pois, events or routes.
  	 * @throws ServerErrorException thrown if the server returned an HTTP error.
  	 */
-	public function getCategories($term = '') {
-		return $this->getCategorization($term, 'find-categories');
+	public function getCategories($parameters = array()) {
+		return $this->getCategorization($parameters, 'find-categories');
 	}
 	
 	/**
  	 * \brief Gets a list of Tags of either Points of Interest, Events or Routes.
  	 *
- 	 * @param string $term the term to get a given list. Should be either poi, event or route.
+	 * @param array $parameters the parameters that should be followed. It should contain a list term with a value either poi, event or route.
  	 * @retval JSON containing the list of Tags.
  	 * @throws VersionNotAvailableException thrown if a given version is not available or was not set.
  	 * @throws ResourceNotAvailableException thrown if the Tags listing is not available.
- 	 * @throws InvalidTermException thrown if the term is not either pois, events or routes
+	 * @throws InvalidParameterException thrown if a given parameter is invalid for Tags listing.
+ 	 * @throws InvalidTermException thrown if the list term is not either pois, events or routes.
  	 * @throws ServerErrorException thrown if the server returned an HTTP error.
  	 */
-	public function getTags($term = '') {
-		return $this->getCategorization($term, 'find-tags');
+	public function getTags($parameters = array()) {
+		return $this->getCategorization($parameters, 'find-tags');
 	}
 	
 	/**
@@ -219,14 +221,15 @@ class TourismClient {
 		return $this->makeQueryCall($this->_hypermedia[$this->_version][$resource], $parameters);
 	}
 	
-	private function getCategorization($term, $resource) {
+	private function getCategorization($parameters, $resource) {
 		$this->verifyVersion();
 		$this->validateResource($resource);
-		$this->validateTerm($term);
+		$this->validateParameters($parameters, $this->_hypermedia[$this->_version][$resource]);
+		if(isset($parameters['list']))
+			$this->validateTerm($parameters['list']);
+		else
+			throw new InvalidTermException('list parameter must be set');
 		
-		$parameters = array (
-			'list' => $term
-		);
 		return $this->makeQueryCall($this->_hypermedia[$this->_version][$resource], $parameters);
 	}
 	
@@ -266,7 +269,7 @@ class TourismClient {
 		if($request->responseInfo['http_code'] == 200)
 			return json_decode($request->responseBody, true);
 		else
-			throw new ServerErrorException('Server returned ' . http_response_code($request->responseInfo['http_code']));
+			throw new ServerErrorException('Server returned ' . $request->responseInfo['http_code']);
 	}
 	
 	private function verifyVersion() {
