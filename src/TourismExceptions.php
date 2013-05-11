@@ -56,4 +56,10 @@ class InvalidTermException extends Exception { }
  * @author Pedro Cruz
  */
 class ServerErrorException extends Exception { }
+/**
+ * \brief Thrown for general errors
+ *
+ * @author Pedro Cruz
+ */
+class UnknownErrorException extends Exception { }
 ?>

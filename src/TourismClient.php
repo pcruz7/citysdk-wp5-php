@@ -47,8 +47,11 @@ class TourismClient {
 			$request = new Request($uri);
 			$request->execute();
 			if($request->responseInfo['http_code'] == '200') {
-				$_SESSION[$uri] = json_decode($request->responseBody, true);
-				$this->decodeVersions($_SESSION[$uri]);
+				$decoded = json_decode($request->responseBody, true);
+				if(!isset($decoded['citysdk-tourism']))
+					throw new UnknownErrorException($uri + ' is not a valid CitySDK Tourism endpoint');
+				$this->decodeVersions($decoded);
+				$_SESSION[$uri] = $decoded;
 			}
 		}
 		
