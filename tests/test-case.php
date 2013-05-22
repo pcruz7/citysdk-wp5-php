@@ -38,12 +38,14 @@ class CitySdkTests extends PHPUnit_Framework_TestCase {
 	}
 	
     public function testListEvent() {
-        $show = array(0, 19);
+        $limit = 10;
+        $offset = 0;
 		$category = array("Music", "Notícias", "Stuff from Stuff");
 		$params = array(
 			"category" => $category,
 			"tag" => "rock",
-			"show" => $show	
+			"limit" => $limit,
+			"offset" => $offset
 		);
 
 		$events = $this->client->getEvents($params);
@@ -75,11 +77,13 @@ class CitySdkTests extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testPoiWithId() {		
-		$show = array(0, 19);
+		$limit = 10;
+		$offset = 0;
 		$category = array('Museum', 'Garden');
 		$params = array(
 			'category' => $category,
-			'show' => $show,
+			'limit' => $limit,
+			'offset' => $offset,
 			'tag' => 'culture'
 		);
 	
@@ -94,11 +98,13 @@ class CitySdkTests extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testAvailableLanguages() {
-		$show = array(0, 19);
+		$limit = 10;
+		$offset = 0;
 		$category = array('Museum', 'Garden');
 		$params = array(
 			'category' => $category,
-			'show' => $show,
+			'limit' => $limit,
+			'offset' => $offset,
 			'tag' => 'culture'
 		);
 	
@@ -112,12 +118,14 @@ class CitySdkTests extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testDataReader() {
-		$show = array(0, 19);
+		$limit = 10;
+		$offset = 0;
 		$category = array('Music', 'Live');
 		$tag = array('rock', 'indie');
 		$params = array(
 			'category' => $category,
-			'show' => $show,
+			'limit' => $limit,
+			'offset' => $offset,
 			'tag' => $tag
 		);
 		
