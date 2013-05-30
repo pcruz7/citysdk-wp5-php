@@ -1,5 +1,25 @@
 <?php
-
+/*
+ * COPYRIGHT NOTICE: 
+ *
+ * This file is part of CitySDK WP5 Tourism PHP Library.
+ *
+ * CitySDK WP5 Tourism PHP Library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * CitySDK WP5 Tourism PHP Library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with CitySDK WP5 Tourism PHP Library. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Copyright 2013, IST
+ */
+ 
 require_once 'phar://citysdk-tourism.phar/TourismClient.php';
 require_once 'phar://citysdk-tourism.phar/DataReader.php';
 
@@ -38,14 +58,12 @@ class CitySdkTests extends PHPUnit_Framework_TestCase {
 	}
 	
     public function testListEvent() {
-        $limit = 10;
-        $offset = 0;
+        $show = array(0, 19);
 		$category = array("Music", "Notícias", "Stuff from Stuff");
 		$params = array(
 			"category" => $category,
 			"tag" => "rock",
-			"limit" => $limit,
-			"offset" => $offset
+			"show" => $show	
 		);
 
 		$events = $this->client->getEvents($params);
@@ -77,13 +95,11 @@ class CitySdkTests extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testPoiWithId() {		
-		$limit = 10;
-		$offset = 0;
+		$show = array(0, 19);
 		$category = array('Museum', 'Garden');
 		$params = array(
 			'category' => $category,
-			'limit' => $limit,
-			'offset' => $offset,
+			'show' => $show,
 			'tag' => 'culture'
 		);
 	
@@ -98,13 +114,11 @@ class CitySdkTests extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testAvailableLanguages() {
-		$limit = 10;
-		$offset = 0;
+		$show = array(0, 19);
 		$category = array('Museum', 'Garden');
 		$params = array(
 			'category' => $category,
-			'limit' => $limit,
-			'offset' => $offset,
+			'show' => $show,
 			'tag' => 'culture'
 		);
 	
@@ -118,14 +132,12 @@ class CitySdkTests extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testDataReader() {
-		$limit = 10;
-		$offset = 0;
+		$show = array(0, 19);
 		$category = array('Music', 'Live');
 		$tag = array('rock', 'indie');
 		$params = array(
 			'category' => $category,
-			'limit' => $limit,
-			'offset' => $offset,
+			'show' => $show,
 			'tag' => $tag
 		);
 		

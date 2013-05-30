@@ -154,6 +154,8 @@ class DataReader {
 			} else if($label['term'] == $term
 					&& DataReader::isSameLang($lang, $labelLang)) {
 				return $label['value'];
+			} else if($label['term'] == $term) {
+				$defaultValue = $label['value'];
 			}
 		}
 		
