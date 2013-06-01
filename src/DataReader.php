@@ -135,7 +135,7 @@ class DataReader {
 			return false;
 		
 		$labels = $poi['label'];
-		if(isset($poiLang))
+		if(isset($poi['lang']))
 			$poiLang = $poi['lang'];
 		else
 			$poiLang = 'en_GB';
@@ -154,8 +154,6 @@ class DataReader {
 			} else if($label['term'] == $term
 					&& DataReader::isSameLang($lang, $labelLang)) {
 				return $label['value'];
-			} else if($label['term'] == $term) {
-				$defaultValue = $label['value'];
 			}
 		}
 		
