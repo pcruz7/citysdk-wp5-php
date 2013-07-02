@@ -192,6 +192,37 @@ class DataReader {
 		
 		return $defaultValue;
 	}
+
+	/**
+ 	 * Gets the categories in a given language.
+ 	 * @param poi the object to get the data.
+	 * @param lang the wanted language.
+ 	 * @retval {array} a list containing the following: the categories in the desired language or false if none found.
+ 	 */
+	public static function getCategories($poi, $lang = 'en_GB') {
+		if(!isset($poi))
+			return false;
+		
+		if(!isset($poi['category']))
+			return false;
+			
+		$categories = $poi['category'];
+		$poiLang = $poi['lang'];
+		$values = array();
+
+		foreach($categories as $category) {
+			if(!isset($category['lang'])) 
+				$categoryLang = $poiLang;
+			else
+				$categoryLang = $categories['lang'];
+			
+			if(DataReader::isSameLang($lang, $categoryLang)) {
+				array_push($values, $category['value']);
+			}
+		}
+		
+		return $values;
+	}
 	
 	/**
 	 * \brief Gets a price description from the POI object with a given language.

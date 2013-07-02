@@ -216,6 +216,17 @@ class TourismClient {
 	private function getEventRelation($base = '', $id = '', $relation = '') {
 		return $this->getRelation($base, $id, $relation, 'find-event-relation');
 	}
+
+	/**
+     * \brief Returns a list of POI-based objects containing the given code
+     * @memberOf TourismClient
+     * @param code a link to search for POI-based objects
+	 * @throws {ResourceNotAvailable} thrown if getting a Event relations is unavailable for the server. 
+     * @throws {VersionNotAvailableException} thrown if the version was not set or is not available.
+     */
+	private function getByCode($code = '') {
+		return $this->getCode($code, 'find-code');
+	}
 	
 	private function getList($parameters, $resource) {
 		$this->verifyVersion();
@@ -249,6 +260,16 @@ class TourismClient {
 		
 		return $this->makeQueryCall($this->_hypermedia[$this->_version][$resource], $parameters);
 	}
+
+	private function getCode($code, $resource) {
+		$this->verifyVersion();
+		$this->validateResource($resource);
+		$parameters = array(
+			'code' => $code
+		);
+		
+		return $this->makeQueryCall($this->_hypermedia[$this->_version][$resource], $parameters);
+	};
 	
 	private function makeQueryCall($resource, $parameters) {
 		$uri = $resource['href'];
